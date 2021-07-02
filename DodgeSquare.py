@@ -3,6 +3,8 @@ from pygame.locals import * #Importa todas as funções e constantes.
 from sys import exit
 from time import sleep
 from random import randint
+controle =1
+
 #Dimensões tela
 largura = 1024  # Eixo X
 altura = 768  # Eixo Y
@@ -15,11 +17,12 @@ clock = pygame.time.Clock()  # Iniciliazar FPS
 tela = pygame.display.set_mode((largura, altura))  # Criação da Janela do game
 pygame.display.set_caption('Jogo')  # Nome da janela do jogo
 
+
 #Controle circulo teste
 xcirc = 512
 ycirc = 0
 #Controle linha teste
-xlinha = 0
+xlinha = -1
 ylinha = 0
 #Controle retângulo player.
 xrec = 492
@@ -27,7 +30,8 @@ yrec = 384
 #Controle retângulo pontuação.
 xpontos = 492
 ypontos = 184
-pontos = 0
+pontos = 1
+timer=0
 
 while True:
     clock.tick(500)  # FPS
@@ -55,21 +59,27 @@ while True:
     pygame.draw.circle(tela, (230, 0, 0), (xcirc, ycirc), 10)  # TELA (RGB) (X,Y) RAIO
     player = pygame.draw.rect(tela, (0, 0, 255), (xrec, yrec, 40, 40))  # TELA (RGB) (X, Y, LARGURA, ALTURA)
     ponto = pygame.draw.rect(tela, (250, 253, 15), (xpontos, ypontos, 10, 10))
-    pygame.draw.line(tela, (0, 255, 0), [xlinha, 0], [xlinha, altura], 10)
 
+    #Teste retorno circulo e linha
     if ycirc >= altura:  # Circulo volta ao topo da janela quando ultrapa ssa o limite baixo (altura)
         ycirc = 0
     ycirc += 1  # Cada vez que atualiza o loop o circulo desce um pixel
 
     if xlinha >= largura:  # Linha volta ao começo da tela quando chega ao limite (largura)
         xlinha = 0
-    xlinha += 1
-    #
+    #Colisão player x linha
+    timer+=1
+    if timer > 1500:
+        linha1 = pygame.draw.rect(tela, (0, 255, 0), (xlinha, ylinha, 5, altura))
+        xlinha+=0.6
+        if player.colliderect(linha1):
+            pontos -= 1
+            xlinha=-100
+    #Colisão player x ponto
     if player.colliderect(ponto):
         pontos += 1
         xpontos = randint(24, 924)
         ypontos = randint(100, 668)
-
     # Movimentação quadrado com wasd pressionando
 
     if pygame.key.get_pressed()[K_a]:
@@ -94,3 +104,6 @@ while True:
 
     # printar texto
     tela.blit(texto_formatado, (largura - 250, 1))
+    mensagem2 = f'xrec: {xrec}' #Pontuação mensagem
+    texto_formatado2 = fonte.render(mensagem2, True, (255, 255, 255)) #Renderizar o texto
+    tela.blit(texto_formatado2, (largura - 500, 1))
