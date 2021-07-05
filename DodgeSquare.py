@@ -23,18 +23,29 @@ xcirc = 512
 ycirc = 0
 #Controle linha teste
 xlinha = -1
+xlinha2 = 1023
+xlinha3 = -1
+xlinha4 = -1
+
 ylinha = 0
+ylinha2 = 0
+ylinha3 = 0
 #Controle retângulo player.
 xrec = 492
 yrec = 384
-#Controle retângulo pontuação.
+#Controle retângulo pontuação.ds
 xpontos = 492
 ypontos = 184
 pontos = 1
-timer=0
+
+xlinhuda=0
+ylinhuda=1
+ylinhuda2=altura
+
+timer=6000
 
 while True:
-    clock.tick(500)  # FPS
+    clock.tick(300)  # FPS
     mensagem = f'Pontos: {pontos}' #Pontuação mensagem
     texto_formatado = fonte.render(mensagem, True, (255, 255, 255)) #Renderizar o texto
 
@@ -56,7 +67,6 @@ while True:
     tela.fill((0, 0, 0))  # Se não colocar isso os objetos se movem porém o rastro fica todo pintado.
 
     # OBJETOS NA TELA
-    pygame.draw.circle(tela, (230, 0, 0), (xcirc, ycirc), 10)  # TELA (RGB) (X,Y) RAIO
     player = pygame.draw.rect(tela, (0, 0, 255), (xrec, yrec, 40, 40))  # TELA (RGB) (X, Y, LARGURA, ALTURA)
     ponto = pygame.draw.rect(tela, (250, 253, 15), (xpontos, ypontos, 10, 10))
 
@@ -65,16 +75,65 @@ while True:
         ycirc = 0
     ycirc += 1  # Cada vez que atualiza o loop o circulo desce um pixel
 
+    #Colisão player x linha
     if xlinha >= largura:  # Linha volta ao começo da tela quando chega ao limite (largura)
         xlinha = 0
-    #Colisão player x linha
+    if xlinha2 <= 0:  # Linha volta ao começo da tela quando chega ao limite (largura)
+        xlinha2 = 1023
+    if xlinha3 >= largura:  # Linha volta ao começo da tela quando chega ao limite (largura)
+        xlinha3 = 0
+    if xlinha4 >= largura:  # Linha volta ao começo da tela quando chega ao limite (largura)
+        xlinha4 = 0
     timer+=1
-    if timer > 1500:
+    #Linha esquerda para direita
+    if timer > 1000:
         linha1 = pygame.draw.rect(tela, (0, 255, 0), (xlinha, ylinha, 5, altura))
         xlinha+=0.6
         if player.colliderect(linha1):
             pontos -= 1
-            xlinha=-100
+            xlinha=-500
+    #Linha direita para esquerda
+    if timer > 2500:
+        linha2 = pygame.draw.rect(tela, (0, 255, 0), (xlinha2, ylinha, 5, altura))
+        xlinha2-=0.6
+        if player.colliderect(linha2):
+            pontos -= 1
+            xlinha2=1500
+    #Linha cima para baixo
+    if timer > 4000:
+        linhuda = pygame.draw.line(tela, (0, 255, 0), [0, ylinhuda], [1024, ylinhuda], 5)
+        ylinhuda += 0.5
+        for c in range(0, 21):
+            c * 0, 1
+            if ylinhuda - c == yrec:
+                pontos -= 1
+                ylinhuda = -500
+        for c in range(0, 6):
+            c * 0, 1
+            if ylinhuda + c == yrec:
+                pontos -= 1
+                ylinhuda = -500
+        if ylinhuda >= altura:  # Linha volta ao começo da tela quando chega ao limite (largura)
+            ylinhuda = 0
+    #Linha baixo para cima
+    if timer > 6000:
+        linhuda2 = pygame.draw.line(tela, (0, 255, 0), [0, ylinhuda2], [1024, ylinhuda2], 5)
+        ylinhuda2 -= 0.5
+        for s in range(0, 21):
+            s * 0, 1
+            if ylinhuda2 - s == yrec:
+                pontos -= 1
+                ylinhuda2 = 1000
+        for s in range(0, 6):
+            s * 0, 1
+            if ylinhuda2 + s == yrec:
+                pontos -= 1
+                ylinhuda2 = 1000
+        if ylinhuda2 <= 0:  # Linha volta ao começo da tela quando chega ao limite (largura)
+            ylinhuda2 = 1000
+
+
+
     #Colisão player x ponto
     if player.colliderect(ponto):
         pontos += 1
