@@ -6,14 +6,15 @@ from random import randint
 
 #Funções
 def colisao(): #Função colisão player x linhas
-    global pontos
+    global vidas
     damage_sound.play()
     sleep(1)
-    pontos -= 1
+    vidas -= 1
 
 def reiniciar(): #Função para reiniciar o jogo
-    global xlinha, xlinha2, ylinha, timer, Vylinha, Vylinha2, xrec, yrec, xpontos, ypontos, dead, pontos
+    global xlinha, xlinha2, ylinha, timer, Vylinha, Vylinha2, xrec, yrec, xpontos, ypontos, dead, pontos, vidas
     pygame.mixer.music.play(-1)
+    vidas = 3
     pontos = 0
     xlinha = -1
     xlinha2 = 1023
@@ -27,6 +28,9 @@ def reiniciar(): #Função para reiniciar o jogo
     ypontos = 184
     dead = False
 
+#Variáveis
+velocidade = 300 #FPS
+vidas = 3 #Controle vidas
 pontos = 0 #Precisa ser declarado depois da função.
 win = 0 #Controle mensagem pos gameover
 
@@ -40,19 +44,23 @@ pygame.font.init() #Inicializa a fonte.
 fonte = pygame.font.SysFont('arial', 40, True, True)  # Inicializar fonte
 clock = pygame.time.Clock()  # Iniciliazar FPS
 tela = pygame.display.set_mode((largura, altura))  # Criação da Janela do game
-pygame.display.set_caption('Jogo')  # Nome da janela do jogo
-timer=8000 #Contador de tempo do jogo
+pygame.display.set_caption('DodgeSquare')  # Nome da janela do jogo
+timer=0 #Contador de tempo do jogo
 
 # Sons
 pygame.mixer.music.set_volume(0.2)
-pygame.mixer.music.load('xDeviruchi - Minigame .mp3') #Background music
+pygame.mixer.music.load('content/xDeviruchi - Minigame .mp3') #Background music
 pygame.mixer.music.play(-1)#musica principal play forever
 
-damage_sound = pygame.mixer.Sound('smas_damage.wav')
-heartup_sound = pygame.mixer.Sound('smas_heart.wav')
-coin_sound = pygame.mixer.Sound('smw_coin.wav')
-gameover_sound = pygame.mixer.Sound('smw_gameover.wav')
-win_sound = pygame.mixer.Sound('smw_win.wav')
+damage_sound = pygame.mixer.Sound('content/smas_damage.wav')
+heartup_sound = pygame.mixer.Sound('content/smas_heart.wav')
+coin_sound = pygame.mixer.Sound('content/smw_coin.wav')
+gameover_sound = pygame.mixer.Sound('content/smw_gameover.wav')
+win_sound = pygame.mixer.Sound('content/smw_win.wav')
+
+#Imagens
+heart = pygame.image.load('content/heart.png')
+heart = pygame.transform.scale(heart, (50, 50))
 
 #Controle linhas horizontais
 xlinha = -1
@@ -68,8 +76,17 @@ yrec = 384
 xpontos = 492 #Um pouco acima do player para ele entender como funciona
 ypontos = 184
 
-velocidade = 300
 while True:
+    if vidas == 3:
+        tela.blit(heart, (0,0))
+        tela.blit(heart, (50,0))
+        tela.blit(heart, (100,0))
+    elif vidas == 2:
+        tela.blit(heart, (0,0))
+        tela.blit(heart, (50,0))
+    elif vidas == 1:
+        tela.blit(heart, (0,0))
+
     clock.tick(velocidade)  #FPS
     timer += 1 #Variavel contadora, usada para controlar o programa todo
     #Texto pontos
@@ -91,7 +108,7 @@ while True:
             if event.key == K_RIGHT:
                 xrec += 150
     #Gameover
-    if pontos < 0:
+    if vidas == 0:
         pygame.mixer.music.fadeout(500)  #para a música depois de um tempinho
         tela.fill((0, 0, 0))
         fonte = pygame.font.SysFont('arial', 40, True)  # Inicializar fonte
@@ -108,7 +125,7 @@ while True:
         texto_win = fonte.render(mensagem_win, True, (255, 255, 255))
         texto_win2 = fonte.render(mensagem_win2, True, (255, 255, 255))
         texto_win3 = fonte.render(mensagem_win3, True, (255, 255, 255))
-        if win == 1:
+        if pontos >= 30:
             win_sound.play()
             tela.blit(texto_win, (largura/2 - 130, 100))
             tela.blit(texto_win2, (largura/2 - 200, 200))
@@ -181,8 +198,13 @@ while True:
                 Vylinha2 = 1000
         if Vylinha2 <= 0:  # Linha volta ao começo da tela quando chega ao limite (largura)
             Vylinha2 = 1000
-    if timer > 8000:
-        velocidade = 400
+    if (timer > 8000) & (timer < 12000):
+        velocidade = 320
+    elif (timer > 12000) & (timer < 16000):
+        velocidade = 340
+    elif (timer > 16000):
+        velocidade = 360
+
 
     #Colisão player x ponto
     if player.colliderect(ponto):
@@ -208,7 +230,8 @@ while True:
         xrec = 0
     if yrec >= altura:  # 768
         yrec = 0
+
     # printar texto
-    # mensagem2 = f'xrec: {xrec}' #Pontuação mensagem
-    # texto_formatado2 = fonte.render(mensagem2, True, (255, 255, 255)) #Renderizar o texto
-    # tela.blit(texto_formatado2, (largura - 500, 1))
+    mensagem2 = f'VE {velocidade} TI {timer}' #Pontuação mensagem
+    texto_formatado2 = fonte.render(mensagem2, True, (255, 255, 255)) #Renderizar o texto
+    tela.blit(texto_formatado2, (largura - 500, 100))
