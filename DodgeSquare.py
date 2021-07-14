@@ -6,13 +6,14 @@ from random import randint
 
 #Funções
 def colisao(): #Função colisão player x linhas
-    global vidas
+    global vidas, Dano, timer2
     damage_sound.play()
-    sleep(1)
     vidas -= 1
+    Dano = True
+    timer2 = 0
 
 def reiniciar(): #Função para reiniciar o jogo
-    global xlinha, xlinha2, ylinha, timer, Vylinha, Vylinha2, xrec, yrec, xpontos, ypontos, dead, pontos, vidas
+    global xlinha, xlinha2, ylinha, timer, Vylinha, Vylinha2, xrec, yrec, xpontos, ypontos, dead, pontos, vidas, velocidade, cor_rec, Dano
     pygame.mixer.music.play(-1)
     vidas = 3
     pontos = 0
@@ -26,8 +27,13 @@ def reiniciar(): #Função para reiniciar o jogo
     yrec = 384
     xpontos = 492  # Um pouco acima do player para ele entender como funciona
     ypontos = 184
+    velocidade = 300
     dead = False
+    cor_rec = 255
+    Dano = False
 
+timer2 = 0
+Dano = False
 #Variáveis
 velocidade = 300 #FPS
 vidas = 3 #Controle vidas
@@ -83,9 +89,12 @@ Vylinha2=altura
 #Controle retângulo player.
 xrec = 492
 yrec = 384
+cor_rec = 255
 #Controle retângulo pontuação.ds
 xpontos = 492 #Um pouco acima do player para ele entender como funciona
 ypontos = 184
+
+
 
 start = True
 while start:
@@ -151,6 +160,51 @@ while True:
         tela.blit(heart, (50,0))
     elif vidas == 1:
         tela.blit(heart, (0,0))
+    if Dano == True and reinicio==0:
+        timer2 += 1
+        cor_rec = 0
+        if timer2 > 950:
+            cor_rec=255
+        elif timer2 > 900:
+            cor_rec=0
+        elif timer2 > 850:
+            cor_rec=255
+        elif timer2 > 800:
+            cor_rec=0
+        elif timer2 > 750:
+            cor_rec=255
+        elif timer2 > 700:
+            cor_rec=0
+        elif timer2 > 650:
+            cor_rec=255
+        elif timer2 > 600:
+            cor_rec=0
+        elif timer2 > 550:
+            cor_rec=255
+        elif timer2 > 500:
+            cor_rec=0
+        elif timer2 > 450:
+            cor_rec=255
+        elif timer2 > 400:
+            cor_rec=0
+        elif timer2 > 350:
+            cor_rec=255
+        elif timer2 > 300:
+            cor_rec=0
+        elif timer2 > 250:
+            cor_rec=255
+        elif timer2 > 200:
+            cor_rec=0
+        elif timer2 > 150:
+            cor_rec=255
+        elif timer2 > 100:
+            cor_rec=0
+        elif timer2 > 50:
+            cor_rec=255
+
+
+        if timer2 >= 1000:
+            Dano = False
 
     clock.tick(velocidade)  #FPS
     timer += 1 #Variavel contadora, usada para controlar o programa todo
@@ -229,15 +283,16 @@ while True:
     pygame.display.update()  #Comando necessário pro jogo rodar, se não usar isso ele só roda um frame
     tela.fill((0, 0, 0))  #Se não colocar isso os objetos se movem porém o rastro fica todo pintado.
     # OBJETOS NA TELA
-    player = pygame.draw.rect(tela, (0, 0, 255), (xrec, yrec, 40, 40))  # TELA (RGB) (X, Y, LARGURA, ALTURA)
+    player = pygame.draw.rect(tela, (0, 0, cor_rec), (xrec, yrec, 40, 40))  # TELA (RGB) (X, Y, LARGURA, ALTURA)
     ponto = pygame.draw.rect(tela, (250, 253, 15), (xpontos, ypontos, 10, 10))
 
     #Colisão player x linhas
     # #Linha esquerda para direita
     if timer > 1000:
+        reinicio = 0
         linha1 = pygame.draw.rect(tela, (0, 255, 0), (xlinha, ylinha, 5, altura))
         xlinha+=0.6
-        if player.colliderect(linha1):
+        if player.colliderect(linha1) and Dano == False:
             colisao()
             xlinha=-500
         if xlinha >= largura:  # Linha volta ao começo da tela quando chega ao limite (largura)
@@ -246,7 +301,7 @@ while True:
     if timer > 2500:
         linha2 = pygame.draw.rect(tela, (0, 255, 0), (xlinha2, ylinha, 5, altura))
         xlinha2-=0.6
-        if player.colliderect(linha2):
+        if player.colliderect(linha2) and Dano == False:
             colisao()
             xlinha2=1500
         if xlinha2 <= 0:  # Linha volta ao começo da tela quando chega ao limite (largura)
@@ -256,11 +311,11 @@ while True:
         pygame.draw.line(tela, (0, 255, 0), [0, Vylinha], [1024, Vylinha], 5)
         Vylinha += 0.5
         for c in range(0, 21):
-            if Vylinha - c == yrec:
+            if Vylinha - c == yrec and Dano == False:
                 colisao()
                 Vylinha = -500
         for c in range(0, 4):
-            if Vylinha + c == yrec:
+            if Vylinha + c == yrec and Dano == False:
                 colisao()
                 Vylinha = -500
         if Vylinha >= altura:  # Linha volta ao começo da tela quando chega ao limite (largura)
@@ -270,11 +325,11 @@ while True:
         pygame.draw.line(tela, (0, 255, 0), [0, Vylinha2], [1024, Vylinha2], 5)
         Vylinha2 -= 0.5
         for s in range(0, 35):
-            if Vylinha2 - s == yrec:
+            if Vylinha2 - s == yrec and Dano == False:
                 colisao()
                 Vylinha2 = 1000
         for s in range(0, 4):
-            if Vylinha2 + s == yrec:
+            if Vylinha2 + s == yrec and Dano == False:
                 colisao()
                 Vylinha2 = 1000
         if Vylinha2 <= 0:  # Linha volta ao começo da tela quando chega ao limite (largura)
