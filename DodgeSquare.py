@@ -1,7 +1,6 @@
 import pygame
 from pygame.locals import * #Importa todas as funções e constantes.
 from sys import exit
-from time import sleep
 from random import randint
 
 #Funções
@@ -57,7 +56,6 @@ timer=0 #Contador de tempo do jogo
 pygame.mixer.music.set_volume(0.2)
 pygame.mixer.music.load('content/xDeviruchi - Minigame .mp3') #Background music
 
-
 damage_sound = pygame.mixer.Sound('content/smas_damage.wav')
 heartup_sound = pygame.mixer.Sound('content/smas_heart.wav')
 coin_sound = pygame.mixer.Sound('content/smw_coin.wav')
@@ -78,7 +76,6 @@ wrecord = pygame.image.load('content/wrecord.png')
 setas = pygame.image.load('content/setas.jpg')
 setas = pygame.transform.scale(setas, (200, 100))
 
-
 #Controle linhas horizontais
 xlinha = -1
 xlinha2 = 1023
@@ -93,8 +90,6 @@ cor_rec = 255
 #Controle retângulo pontuação.ds
 xpontos = 492 #Um pouco acima do player para ele entender como funciona
 ypontos = 184
-
-
 
 start = True
 while start:
@@ -341,7 +336,6 @@ while True:
     elif (timer > 16000):
         velocidade = 360
 
-
     #Colisão player x ponto
     if player.colliderect(ponto):
         pontos += 1
@@ -366,9 +360,3 @@ while True:
         xrec = 0
     if yrec >= altura:  # 768
         yrec = 0
-
-
-    # printar texto
-    # mensagem2 = f'VE {velocidade} TI {timer}' #Pontuação mensagem
-    # texto_formatado2 = fonte.render(mensagem2, True, (255, 255, 255)) #Renderizar o texto
-    # tela.blit(texto_formatado2, (largura - 500, 100))
