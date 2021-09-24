@@ -15,3 +15,4 @@ Para executar o jogo ***não*** é necessário ter o python instalado, é necess
 - O arquivo RAR completo tem o tamanho de 42MB.
 - O executável do jogo consome por volta de 35MB de memoria RAM.
 
+<img src="https://i.imgur.com/w9URmPr.png">
